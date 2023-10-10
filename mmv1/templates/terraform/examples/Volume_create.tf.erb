@@ -1,0 +1,22 @@
+resource "google_netapp_volume" "<%= ctx[:primary_resource_id] %>" {
+  location = "us-central1"
+  volume_id = "testvolume1"
+  capacity_gib = "100"
+  shareName = "testshare"
+  storagePool = "testpool"
+  protocols = ["NFSV3"]
+  psaRange = ""
+  exportPolicy = {}
+  smbSettings = []
+  unixPermissions = ""
+  labels = {}
+  description = ""
+  snapshotPolicy = {}
+  snapReserve = 0
+  snapshotDirectory = false
+  securityStyle = "SECURITY_STYLE_UNSPECIFIED"
+  kerberosEnabled = false
+  restoreParameters = {}
+  restrictedActions = []
+
+}

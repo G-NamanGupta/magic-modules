@@ -1,0 +1,23 @@
+resource "google_netapp_volume" "test_volume" {
+  location = "us-central1"
+  volume_id = "testvolume1"
+  capacity_gib = "200"
+  share_name = "testshare"
+  storage_pool = "testpool"
+  protocols = ["NFSV3"]
+  smb_settings = []
+  labels = {}
+  description = ""
+  snap_reserve = 0
+  snapshot_directory = false
+  kerberos_enabled = false
+  security_style   = "UNIX"
+  unix_permissions = "0770"
+}
+
+resource "google_netapp_volumesnapshot" "test_volume_snap" {
+  depends_on = [google_netapp_volume.test_volume]
+  location = "us-central1"
+  volume_id = "testvolume1"
+  snapshot_id = "testvolumesnap"
+}

@@ -1,0 +1,480 @@
+# Copyright 2023 Google Inc.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+--- !ruby/object:Api::Resource
+# API resource name
+name: 'volume'
+# Resource description for the provider documentation.
+description: |
+  Volume provides a filesystem that you can mount.
+references: !ruby/object:Api::Resource::ReferenceLinks
+  guides:
+    'QUICKSTART_TITLE': 'https://cloud.google.com/netapp/volumes/docs/reference/rest/v1/projects.locations.volumes'
+  # Link to the REST API reference for the resource. For example,
+  api: 'https://cloud.google.com/netapp/volumes/docs/reference/rest/v1/projects.locations.volumes'
+# Marks the resource as beta-only. Ensure a beta version block is present in
+# provider.yaml.
+# min_version: beta
+
+# Inserts styled markdown into the header of the resource's page in the
+# provider documentation.
+# docs: !ruby/object:Provider::Terraform::Docs
+#   warning: |
+#     MULTILINE_WARNING_MARKDOWN
+#   note: |
+#     MULTILINE_NOTE_MARKDOWN
+
+# URL for the resource's standard List method. https://google.aip.dev/132
+# Terraform field names enclosed in double curly braces are replaced with
+# the field values from the resource at runtime.
+base_url: projects/{{project}}/locations/{{location}}/volumes
+# URL for the resource's standard Get method. https://google.aip.dev/131
+# Terraform field names enclosed in double curly braces are replaced with
+# the field values from the resource at runtime.
+self_link: projects/{{project}}/locations/{{location}}/volumes/{{volume_id}}
+
+# If true, the resource and all its fields are considered immutable - that is,
+# only creatable, not updatable. Individual fields can override this if they
+# have a custom update method in the API.
+# immutable: true
+
+# Overrides one or more timeouts, in minutes. All timeouts default to 20.
+# timeouts: !ruby/object:Api::Timeouts
+#   insert_minutes: 20
+#   update_minutes: 20
+#   delete_minutes: 20
+
+# URL for the resource's standard Create method, including query parameters.
+# https://google.aip.dev/133
+# Terraform field names enclosed in double curly braces are replaced with
+# the field values from the resource at runtime.
+create_url: projects/{{project}}/locations/{{location}}/volumes?volumeId={{volume_id}}
+# Overrides the HTTP verb used to create a new resource.
+# Allowed values: :POST, :PUT, :PATCH. Default: :POST
+create_verb: :POST
+
+# Overrides the URL for the resource's standard Update method. (If unset, the
+# self_link URL is used by default.) https://google.aip.dev/134
+# Terraform field names enclosed in double curly braces are replaced with
+# the field values from the resource at runtime.
+update_url: projects/{{project}}/locations/{{location}}/volumes/{{volume_id}}
+# The HTTP verb used to update a resource. Allowed values: :POST, :PUT, :PATCH. Default: :PUT.
+update_verb: :PATCH
+# If true, the resource sets an `updateMask` query parameter listing modified
+# fields when updating the resource. If false, it does not.
+update_mask: true
+
+# Overrides the URL for the resource's standard Delete method. (If unset, the
+# self_link URL is used by default.) https://google.aip.dev/135
+# Terraform field names enclosed in double curly braces are replaced with
+# the field values from the resource at runtime.
+# delete_url: 'projects/{{project}}/locations/{{location}}/storagePools/{{name}}'
+# Overrides the HTTP verb used to delete a resource.
+# Allowed values: :POST, :PUT, :PATCH, :DELETE. Default: :DELETE
+# delete_verb: :DELETE
+
+# If true, code for handling long-running operations is generated along with
+# the resource. If false, that code is not generated.
+autogen_async: true
+# Sets parameters for handling operations returned by the API.
+async: !ruby/object:Api::OpAsync
+  # Overrides which API calls return operations. Default: ['create',
+  # 'update', 'delete']
+  # actions: ['create', 'update', 'delete']
+  operation: !ruby/object:Api::OpAsync::Operation
+    base_url: '{{op_id}}'
+
+  # If true, the provider sets the resource's Terraform ID after the resource is created,
+  # taking into account values that are set by the API at create time. This is only possible
+  # when the completed operation's JSON includes the created resource in the "response" field.
+  # If false (or unset), the provider sets the resource's Terraform ID before the resource is
+  # created, based only on the resource configuration.
+  # result: !ruby/object:Api::OpAsync::Result
+  #   resource_inside_response: true
+
+# All resources (of all kinds) that share a mutex value block rather than
+# executing concurrent API requests.
+# Terraform field names enclosed in double curly braces are replaced with
+# the field values from the resource at runtime.
+# mutex: RESOURCE_NAME/{{name}}
+
+parameters:
+  - !ruby/object:Api::Type::String
+    name: 'location'
+    required: true
+    immutable: true
+    url_param_only: true
+    description: |
+      LOCATION_DESCRIPTION
+  - !ruby/object:Api::Type::String
+    name: 'volume_id'
+    description:
+      'The unique name of the volume
+      `[_a-zA-Z0-9][-_.a-zA-Z0-9]*`.'
+    required: true
+    immutable: true
+    url_param_only: true
+examples:
+  - !ruby/object:Provider::Terraform::Examples
+    name: 'Volume_create'
+    primary_resource_id: 'test_volume'
+    vars:
+      pool_name: 'test-volume'
+properties:
+  # Fields go here
+  - !ruby/object:Api::Type::String
+    name: name
+    output: true
+    description: |
+      Name of the volume
+  - !ruby/object:Api::Type::Enum
+    name: 'State'
+    description: |
+      State of the storage pool
+    values:
+      - :STATE_UNSPECIFIED
+      - :CREATING
+      - :RESTORING
+      - :UPDATING
+      - :DELETING
+      - :DISABLED
+      - :READY
+    output: true
+  - !ruby/object:Api::Type::String
+    name: 'stateDetails'
+    description: |
+      State details of the storage pool
+    output: true
+  - !ruby/object:Api::Type::String
+    name: 'createTime'
+    description: |
+      Create time of the storage pool
+    output: true
+  - !ruby/object:Api::Type::String
+    name: 'shareName'
+    description: |
+      Share name of the volume
+    required: true
+  - !ruby/object:Api::Type::String
+    name: 'psaRange'
+    description: |
+      Name of the Private Service Access allocated range. This is optional. If not provided, any available range will be chosen.
+    output: true
+  - !ruby/object:Api::Type::String
+    name: 'storagePool'
+    description: |
+       StoragePool name of the volume
+    required: true
+  - !ruby/object:Api::Type::String
+    name: 'network'
+    description: |
+      VPC Network name. Format: projects/{project}/global/networks/{network}
+    output: true
+  - !ruby/object:Api::Type::Enum
+    name: 'serviceLevel'
+    description: |
+      Service level of the volume
+    values:
+      - :SERVICE_LEVEL_UNSPECIFIED
+      - :PREMIUM
+      - :EXTREME
+      - :STANDARD
+    output: true
+  - !ruby/object:Api::Type::String
+    name: 'capacityGib'
+    description: |
+      Capacity in GIB of the volume
+    required: true
+
+  - !ruby/object:Api::Type::NestedObject
+    name: 'exportPolicy'
+    description: |-
+      Export policy of the volume.
+    properties:
+      - !ruby/object:Api::Type::Array
+        name: 'rules'
+        description: |-
+          List of export policy rules
+        item_type: !ruby/object:Api::Type::NestedObject
+          properties:
+            - !ruby/object:Api::Type::String
+              name: 'allowedClients'
+              description: |-
+                Comma separated list of allowed clients IP addresses.
+            - !ruby/object:Api::Type::String
+              name: 'hasRootAccess'
+              description: |-
+                Whether Unix root access will be granted.
+            - !ruby/object:Api::Type::Enum
+              name: 'accessType'
+              description: |
+                Access type (ReadWrite, ReadOnly, None)
+              values:
+                - :ACCESS_TYPE_UNSPECIFIED
+                - :READ_ONLY
+                - :READ_WRITE
+                - :READ_NONE
+            - !ruby/object:Api::Type::Boolean
+              name: 'nfsv3'
+              description: |
+                NFS V3 protocol.
+            - !ruby/object:Api::Type::Boolean
+              name: 'nfsv4'
+              description: |
+                NFS V4 protocol.
+            - !ruby/object:Api::Type::Boolean
+              name: 'kerberos5ReadOnly'
+              description: |
+                If enabled (true) the rule defines a read only access for clients matching the 'allowedClients' specification. It enables nfs clients to mount using 'authentication' kerberos security mode.
+            - !ruby/object:Api::Type::Boolean
+              name: 'kerberos5ReadWrite'
+              description: |
+                If enabled (true) the rule defines read and write access for clients matching the 'allowedClients' specification. It enables nfs clients to mount using 'authentication' kerberos security mode. The 'kerberos5ReadOnly' value be ignored if this is enabled.
+            - !ruby/object:Api::Type::Boolean
+              name: 'kerberos5iReadOnly'
+              description: |
+                If enabled (true) the rule defines a read only access for clients matching the 'allowedClients' specification. It enables nfs clients to mount using 'integrity' kerberos security mode.
+            - !ruby/object:Api::Type::Boolean
+              name: 'kerberos5iReadWrite'
+              description: |
+                If enabled (true) the rule defines read and write access for clients matching the 'allowedClients' specification. It enables nfs clients to mount using 'integrity' kerberos security mode. The 'kerberos5iReadOnly' value be ignored if this is enabled.
+            - !ruby/object:Api::Type::Boolean
+              name: 'kerberos5pReadOnly'
+              description: |
+                If enabled (true) the rule defines a read only access for clients matching the 'allowedClients' specification. It enables nfs clients to mount using 'privacy' kerberos security mode.
+            - !ruby/object:Api::Type::Boolean
+              name: 'kerberos5pReadWrite'
+              description: |
+                If enabled (true) the rule defines read and write access for clients matching the 'allowedClients' specification. It enables nfs clients to mount using 'privacy' kerberos security mode. The 'kerberos5pReadOnly' value be ignored if this is enabled.
+  - !ruby/object:Api::Type::Array
+    name: 'protocols'
+    description: |
+      State of the storage pool
+    required: true
+    item_type: !ruby/object:Api::Type::Enum
+      name: 'protocols'
+      description: |
+        State of the storage pool
+      values:
+        - :PROTOCOLS_UNSPECIFIED
+        - :NFSV3
+        - :NFSV4
+        - :SMB
+  - !ruby/object:Api::Type::Array
+    name: 'smbSettings'
+    description: |
+      SMB share settings for the volume.
+    item_type: !ruby/object:Api::Type::Enum
+      name: 'smbSettings'
+      description: |
+        SMB share settings for the volume.
+      values:
+        - :SMB_SETTINGS_UNSPECIFIED
+        - :ENCRYPT_DATA
+        - :BROWSABLE
+        - :CHANGE_NOTIFY
+        - :NON_BROWSABLE
+        - :OPLOCKS
+        - :SHOW_SNAPSHOT
+        - :SHOW_PREVIOUS_VERSIONS
+        - :ACCESS_BASED_ENUMERATION
+        - :CONTINUOUSLY_AVAILABLE
+  - !ruby/object:Api::Type::String
+    name: 'unixPermissions'
+    description: |
+      Default unix style permission (e.g. 777) the mount point will be created with. Applicable for NFS protocol types only.
+  - !ruby/object:Api::Type::KeyValuePairs
+    name: 'labels'
+    description: |
+      Labels with user-defined metadata.
+      This field may contain up to 64 entries. Label keys and values may be no
+      longer than 63 characters. Label keys must begin with a lowercase letter
+      and may only contain lowercase letters, Integer characters, underscores,
+      and dashes.
+  - !ruby/object:Api::Type::String
+    name: 'description'
+    description: |
+      Description of the volume
+  - !ruby/object:Api::Type::Integer
+    name: 'snapReserve'
+    description: |
+      Snap_reserve specifies percentage of volume storage reserved for snapshot storage. Default is 0 percent.
+  - !ruby/object:Api::Type::Boolean
+    name: 'snapshotDirectory'
+    description: |
+      Snapshot_directory if enabled (true) the volume will contain a read-only .snapshot directory which provides access to each of the volume's snapshots.
+  - !ruby/object:Api::Type::String
+    name: 'usedGib'
+    description: |
+      Used capacity in GIB of the volume. This is computed periodically and it does not represent the realtime usage.
+    output: true
+  - !ruby/object:Api::Type::Enum
+    name: 'securityStyle'
+    description: |
+      Security Style of the Volume
+    values:
+      - :SECURITY_STYLE_UNSPECIFIED
+      - :NTFS
+      - :UNIX
+  - !ruby/object:Api::Type::Boolean
+    name: 'kerberosEnabled'
+    description: |
+      Flag indicating if the volume is a kerberos volume or not, export policy rules control kerberos security modes (krb5, krb5i, krb5p).
+  - !ruby/object:Api::Type::Boolean
+    name: ldapEnabled
+    description: |
+      Flag indicating if the volume is NFS LDAP enabled or not.
+    output: true
+  - !ruby/object:Api::Type::String
+    name: 'activeDirectory'
+    description: |
+      Specifies the ActiveDirectory name of a SMB volume.
+    output: true
+  - !ruby/object:Api::Type::String
+    name: 'kmsConfig'
+    description: |
+      Specifies the KMS config to be used for volume encryption.
+    output: true
+  - !ruby/object:Api::Type::Enum
+    name: 'encryptionType'
+    description: |
+      Specifies the current pool encryption key source.
+    values:
+      - :ENCRYPTION_TYPE_UNSPECIFIED
+      - :SERVICE_MANAGED
+      - :CLOUD_KMS
+    output: true
+  - !ruby/object:Api::Type::Boolean
+    name: 'hasReplication'
+    description: |
+      Indicates whether the volume is part of a replication relationship.
+    output: true
+  - !ruby/object:Api::Type::Enum
+    name: 'restrictedActions'
+    description: |
+      List of actions that are restricted on this volume.
+    values:
+      - :RESTRICTED_ACTION_UNSPECIFIED
+      - :DELETE
+  - !ruby/object:Api::Type::Array
+    name: 'mountOptions'
+    description: Mount options of this volume
+    output: true
+    item_type: !ruby/object:Api::Type::NestedObject
+      properties:
+        - !ruby/object:Api::Type::String
+          name: 'export'
+          description: Export string
+        - !ruby/object:Api::Type::String
+          name: 'exportFull'
+          description: Full export string
+        - !ruby/object:Api::Type::String
+          name: 'instructions'
+          description: Instructions for mounting
+        - !ruby/object:Api::Type::Enum
+          name: 'protocol'
+          description: |
+                Protocol to mount with.
+          values:
+            - :PROTOCOLS_UNSPECIFIED
+            - :NFSV3
+            - :NFSV4
+            - :SMB
+  - !ruby/object:Api::Type::NestedObject
+    name: snapshotPolicy
+    description: SnapshotPolicy for a volume.
+    properties:
+      - !ruby/object:Api::Type::Boolean
+        name: 'enabled'
+        description: |-
+          If enabled, make snapshots automatically according to the schedules. Default is false.
+      - !ruby/object:Api::Type::NestedObject
+        name: 'hourlySchedule'
+        description: |-
+          Hourly schedule policy.
+        properties:
+          - !ruby/object:Api::Type::Integer
+            name: 'snapshotsToKeep'
+            description: |-
+              The maximum number of Snapshots to keep for the hourly schedule
+          - !ruby/object:Api::Type::Integer
+            name: 'minute'
+            description: |-
+              Set the minute of the hour to start the snapshot (0-59), defaults to the top of the hour (0).
+      - !ruby/object:Api::Type::NestedObject
+        name: 'dailySchedule'
+        description: |-
+          Hourly schedule policy.
+        properties:
+          - !ruby/object:Api::Type::Integer
+            name: 'snapshotsToKeep'
+            description: |-
+              The maximum number of Snapshots to keep for the hourly schedule
+          - !ruby/object:Api::Type::Integer
+            name: 'minute'
+            description: |-
+              Set the minute of the hour to start the snapshot (0-59), defaults to the top of the hour (0).
+          - !ruby/object:Api::Type::Integer
+            name: 'hour'
+            description: |-
+              Set the hour to start the snapshot (0-23), defaults to midnight (0).
+      - !ruby/object:Api::Type::NestedObject
+        name: 'weeklySchedule'
+        description: |-
+          Hourly schedule policy.
+        properties:
+          - !ruby/object:Api::Type::Integer
+            name: 'snapshotsToKeep'
+            description: |-
+              The maximum number of Snapshots to keep for the hourly schedule
+          - !ruby/object:Api::Type::Integer
+            name: 'minute'
+            description: |-
+              Set the minute of the hour to start the snapshot (0-59), defaults to the top of the hour (0).
+          - !ruby/object:Api::Type::Integer
+            name: 'hour'
+            description: |-
+              Set the hour to start the snapshot (0-23), defaults to midnight (0).
+          - !ruby/object:Api::Type::String
+            name: 'day'
+            description: |-
+              Set the day or days of the week to make a snapshot. Accepts a comma separated days of the week. Defaults to 'Sunday'.
+      - !ruby/object:Api::Type::NestedObject
+        name: 'monthlySchedule'
+        description: |-
+          Hourly schedule policy.
+        properties:
+          - !ruby/object:Api::Type::Integer
+            name: 'snapshotsToKeep'
+            description: |-
+              The maximum number of Snapshots to keep for the hourly schedule
+          - !ruby/object:Api::Type::Integer
+            name: 'minute'
+            description: |-
+              Set the minute of the hour to start the snapshot (0-59), defaults to the top of the hour (0).
+          - !ruby/object:Api::Type::Integer
+            name: 'hour'
+            description: |-
+              Set the hour to start the snapshot (0-23), defaults to midnight (0).
+          - !ruby/object:Api::Type::String
+            name: 'daysOfMonth'
+            description: |-
+              Set the day or days of the month to make a snapshot (1-31). Accepts a comma separated number of days. Defaults to '1'.
+  - !ruby/object:Api::Type::NestedObject
+    name: restoreParameters
+    description: Specifies the source of the volume to be created from.
+    properties:
+      - !ruby/object:Api::Type::String
+        name: 'sourceSnapshot'
+        description: |-
+          Full name of the snapshot resource. Format: projects/{project}/locations/{location}/volumes/{volume}/snapshots/{snapshot}

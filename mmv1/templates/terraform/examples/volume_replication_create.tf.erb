@@ -1,0 +1,31 @@
+resource "google_netapp_volume" "test_volume" {
+  location = "us-central1"
+  volume_id = "testvolume1"
+  capacity_gib = "200"
+  share_name = "testshare"
+  storage_pool = "testpool"
+  protocols = ["NFSV3"]
+  smb_settings = []
+  labels = {}
+  description = ""
+  snap_reserve = 0
+  snapshot_directory = false
+  kerberos_enabled = false
+  security_style   = "UNIX"
+  unix_permissions = "0770"
+}
+
+resource "google_netapp_volumereplication" "test_volume_rep" {
+  depends_on = [google_netapp_volume.test_volume]
+  location = "us-central1"
+  volume_id = "testvolume1"
+  replication_id = "testvolumerep"
+  replication_schedule = "DAILY"
+  destination_volume_parameters {
+	storage_pool= "projects/cxo-automation-gcp/locations/us-east4/storagePools/testpool1"
+  	volume_id= "testrepvol"
+  	share_name= "testrepshare"
+  	description= "This is a replicated volume"
+	}
+
+}
