@@ -1,6 +1,6 @@
 resource "google_netapp_volume" "test_volume" {
   location = "us-central1"
-  volume_id = "testvolume1"
+  volume_id = "<%= ctx[:vars]['volume_name'] %>"
   capacity_gib = "200"
   share_name = "testshare"
   storage_pool = "testpool"
@@ -15,16 +15,17 @@ resource "google_netapp_volume" "test_volume" {
   unix_permissions = "0770"
 }
 
-resource "google_netapp_volumereplication" "test_volume_rep" {
+resource "google_netapp_volumereplication" "<%= ctx[:primary_resource_id] %>" {
   depends_on = [google_netapp_volume.test_volume]
   location = "us-central1"
-  volume_id = "testvolume1"
+  volume_id = google_netapp_volume.test_volume.volume_id
   replication_id = "testvolumerep"
   replication_schedule = "DAILY"
+  delete_destination_volume = "Yes"
   destination_volume_parameters {
 	storage_pool= "projects/cxo-automation-gcp/locations/us-east4/storagePools/testpool1"
-  	volume_id= "testrepvol"
-  	share_name= "testrepshare"
+  	volume_id= "<%= ctx[:vars]['rep_vol_name'] %>"
+  	share_name= "<%= ctx[:vars]['rep_share_name'] %>"
   	description= "This is a replicated volume"
 	}
 
