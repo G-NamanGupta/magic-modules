@@ -18,8 +18,8 @@ resource "google_netapp_volume" "test_volume" {
 resource "google_netapp_volumereplication" "<%= ctx[:primary_resource_id] %>" {
   depends_on = [google_netapp_volume.test_volume]
   location = "us-central1"
-  volume_id = google_netapp_volume.test_volume.volume_id
-  replication_id = "testvolumerep"
+  volume_name = google_netapp_volume.test_volume.name
+  name = "testvolumerep"
   replication_schedule = "DAILY"
   delete_destination_volume = "Yes"
   destination_volume_parameters {

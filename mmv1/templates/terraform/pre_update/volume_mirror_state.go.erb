@@ -1,7 +1,7 @@
 if d.Get("volume_replication_state").(string) != "" {
 	log.Printf("[DEBUG] value of replication_state : %v", d.Get("volume_replication_state"))
 	var obj map[string]interface{}
-	rawurl, err := tpgresource.ReplaceVars(d, config, "{{NetappBasePath}}projects/{{project}}/locations/{{location}}/volumes/{{volume_id}}/replications/{{replication_id}}:")
+	rawurl, err := tpgresource.ReplaceVars(d, config, "{{NetappBasePath}}projects/{{project}}/locations/{{location}}/volumes/{{volume_id}}/replications/{{name}}:")
 	if err != nil {
 		return err
 	}

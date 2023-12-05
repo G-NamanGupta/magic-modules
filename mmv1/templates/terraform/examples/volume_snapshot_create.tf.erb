@@ -18,6 +18,11 @@ resource "google_netapp_volume" "test_volume" {
 resource "google_netapp_volumesnapshot" "test_volume_snap" {
   depends_on = [google_netapp_volume.test_volume]
   location = "us-central1"
-  volume_id = "testvolume1"
-  snapshot_id = "testvolumesnap"
+  volume_name = "testvolume1"
+  description = "This is a test description"
+  name = "testvolumesnap"
+  labels                = {
+    key= "test"
+    value= "snapshot"
+  }
 }

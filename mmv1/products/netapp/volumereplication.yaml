@@ -19,18 +19,18 @@ references: !ruby/object:Api::Resource::ReferenceLinks
   guides:
     'QUICKSTART_TITLE': 'https://cloud.google.com/netapp/volumes/docs/reference/rest/v1/projects.locations.volumes.replications'
   api: 'https://cloud.google.com/netapp/volumes/docs/reference/rest/v1/projects.locations.volumes.replications'
-base_url: projects/{{project}}/locations/{{location}}/volumes/{{volume_id}}/replications
-self_link: projects/{{project}}/locations/{{location}}/volumes/{{volume_id}}/replications/{{replication_id}}
-create_url: projects/{{project}}/locations/{{location}}/volumes/{{volume_id}}/replications?replicationId={{replication_id}}
-update_url: projects/{{project}}/locations/{{location}}/volumes/{{volume_id}}/replications/{{replication_id}}
+base_url: projects/{{project}}/locations/{{location}}/volumes/{{volume_name}}/replications
+self_link: projects/{{project}}/locations/{{location}}/volumes/{{volume_name}}/replications/{{name}}
+create_url: projects/{{project}}/locations/{{location}}/volumes/{{volume_name}}/replications?replicationId={{name}}
+update_url: projects/{{project}}/locations/{{location}}/volumes/{{volume_name}}/replications/{{name}}
 update_verb: :PATCH
 update_mask: true
 autogen_async: true
 async: !ruby/object:Api::OpAsync
   operation: !ruby/object:Api::OpAsync::Operation
     base_url: '{{op_id}}'
-id_format: 'projects/{{project}}/locations/{{location}}/volumes/{{volume_id}}/replications/{{replication_id}}'
-import_format: ['projects/{{project}}/locations/{{location}}/volumes/{{volume_id}}/replications/{{replication_id}}']
+id_format: 'projects/{{project}}/locations/{{location}}/volumes/{{volume_name}}/replications/{{name}}'
+import_format: ['projects/{{project}}/locations/{{location}}/volumes/{{volume_name}}/replications/{{name}}']
 parameters:
   - !ruby/object:Api::Type::String
     name: 'location'
@@ -40,7 +40,7 @@ parameters:
     description: |
       LOCATION_DESCRIPTION
   - !ruby/object:Api::Type::String
-    name: 'volume_id'
+    name: 'volume_name'
     description:
       'The unique name of the volume
       `[_a-zA-Z0-9][-_.a-zA-Z0-9]*`.'
@@ -48,7 +48,7 @@ parameters:
     immutable: true
     url_param_only: true
   - !ruby/object:Api::Type::String
-    name: 'replication_id'
+    name: 'name'
     description:
       'The unique name of the replication resource
       `[_a-zA-Z0-9][-_.a-zA-Z0-9]*`.'
@@ -85,12 +85,6 @@ virtual_fields:
       - :stop
       - :resume
 properties:
-  # Fields go here
-  - !ruby/object:Api::Type::String
-    name: name
-    output: true
-    description: |
-      The resource name of the Replication. Format: projects/{projectId}/locations/{location}/volumes/{volumeId}/replications/{replicationId}.
   - !ruby/object:Api::Type::String
     name: 'destinationVolume'
     description: |

@@ -1,4 +1,4 @@
-rawurl, err := tpgresource.ReplaceVars(d, config, "{{NetappBasePath}}projects/{{project}}/locations/{{location}}/volumes/{{volume_id}}/replications/{{replication_id}}:stop")
+rawurl, err := tpgresource.ReplaceVars(d, config, "{{NetappBasePath}}projects/{{project}}/locations/{{location}}/volumes/{{volume_id}}/replications/{{name}}:stop")
 if err != nil {
 		return err
 	}
